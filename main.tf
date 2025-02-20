@@ -22,7 +22,7 @@ module "vpc" {
 
 resource "google_compute_firewall" "default" {
   name    = "test-firewall"
-  network = var.vpc_name
+  network = module.vpc.network_name
 
   allow {
     protocol = "icmp"
@@ -34,8 +34,4 @@ resource "google_compute_firewall" "default" {
   }
 
   source_tags = ["dev"]
-}
-
-resource "google_compute_network" "default" {
-  name = "test-network"
 }
