@@ -4,10 +4,16 @@ variable "project_id" {
   default = "ml-dev-1"
 }
 
+variable "default_region" {
+  description = "defualt region"
+  type = string
+  default = "us-central1"
+}
+
 variable "vpc_name" {
   description = "vpc name"
   type = string
-  default = "cid-tf-test"
+  default = "cis-vpc-1"
 }
 
 variable "vpc_routing" {

@@ -1,7 +1,6 @@
 provider "google" {
   project = var.project_id
-  region = "us-central1"
-  zone = "us-central1-a"
+  region = var.default_region
 }
 
 module "vpc" {
@@ -14,9 +13,22 @@ module "vpc" {
     routing_mode = var.vpc_routing
     subnets = [
         {
-            subnet_name = "tf-test"
+            subnet_name = "subnet-1"
             subnet_ip = "10.1.0.0/20"
             subnet_region = "us-central1"
         }
+    ]
+    ingress_rules = [
+        {
+            name    = "allow-ssh"
+            source_ranges = ["0.0.0.0/0"]  // Allow SSH from anywhere (restrict this!)
+            allowed = [
+                {
+                    protocol = "tcp"
+                    ports    = ["22"]
+                }
+            ]
+            target_tags = ["ssh-allowed"] // Optional: Apply to instances with this tag
+        },
     ]
 }
