@@ -20,9 +20,9 @@ module "vpc" {
     ]
     ingress_rules = [
         {
-            name    = "allow-ssh"
+            name    = "default-allow-ssh"
             source_ranges = ["0.0.0.0/0"]  // Allow SSH from anywhere (restrict this!)
-            allowed = [
+            allow = [
                 {
                     protocol = "tcp"
                     ports    = ["22"]
