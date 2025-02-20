@@ -18,17 +18,24 @@ module "vpc" {
             subnet_region = "us-central1"
         }
     ]
-    ingress_rules = [
-        {
-            name    = "default-allow-ssh"
-            source_ranges = ["0.0.0.0/0"]  // Allow SSH from anywhere (restrict this!)
-            allow = [
-                {
-                    protocol = "tcp"
-                    ports    = ["22"]
-                }
-            ]
-            target_tags = ["ssh-allowed"] // Optional: Apply to instances with this tag
-        },
-    ]
+}
+
+resource "google_compute_firewall" "default" {
+  name    = "test-firewall"
+  network = var.vpc_name
+
+  allow {
+    protocol = "icmp"
+  }
+
+  allow {
+    protocol = "tcp"
+    ports    = ["80", "8080", "1000-2000"]
+  }
+
+  source_tags = ["dev"]
+}
+
+resource "google_compute_network" "default" {
+  name = "test-network"
 }
