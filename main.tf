@@ -8,9 +8,11 @@ module "vpc" {
     version = "~> 10.0"
 
     project_id = var.project_id
-    auto_create_subnetworks = false
     network_name = var.vpc_name
+
+    auto_create_subnetworks = false
     routing_mode = var.vpc_routing
+
     subnets = [
         {
             subnet_name = "subnet-1"
@@ -20,18 +22,29 @@ module "vpc" {
     ]
 }
 
-resource "google_compute_firewall" "default" {
-  name    = "test-firewall"
-  network = module.vpc.network_name
+module "firewall_rules" {
+  source       = "terraform-google-modules/network/google//modules/firewall-rules"
+  project_id   = var.project_id
+  network_name = module.vpc.network_name
 
-  allow {
-    protocol = "icmp"
-  }
-
-  allow {
-    protocol = "tcp"
-    ports    = ["80", "8080", "1000-2000"]
-  }
-
-  source_tags = ["dev"]
+  rules = [{
+    name                    = "allow-ssh-ingress"
+    description             = null
+    direction               = "INGRESS"
+    priority                = null
+    destination_ranges      = ["10.0.0.0/8"]
+    source_ranges           = ["0.0.0.0/0"]
+    source_tags             = null
+    source_service_accounts = null
+    target_tags             = null
+    target_service_accounts = null
+    allow = [{
+      protocol = "tcp"
+      ports    = ["22"]
+    }]
+    deny = []
+    log_config = {
+      metadata = "INCLUDE_ALL_METADATA"
+    }
+  }]
 }
