@@ -73,6 +73,7 @@ module "firewall_rules" {
 module "instance_template" {
   source  = "terraform-google-modules/vm/google//modules/instance_template"
   automatic_restart = true
+  machine_type = "e2-small"
   description = "mlflow server instance template"
   name_prefix = "mlflow-instance-template"
   network = module.vpc.network_name
