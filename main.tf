@@ -27,47 +27,33 @@ module "firewall_rules" {
   project_id   = var.project_id
   network_name = module.vpc.network_name
 
-  rules = [{
-    name                    = "allow-ssh-ingress"
-    description             = null
-    direction               = "INGRESS"
-    priority                = null
-    destination_ranges      = ["10.0.0.0/8"]
-    source_ranges           = ["0.0.0.0/0"]
-    source_tags             = null
-    source_service_accounts = null
-    target_tags             = null
-    target_service_accounts = null
-    allow = [{
-      protocol = "tcp"
-      ports    = ["22"]
-    }]
-    deny = []
-    log_config = {
-      metadata = "INCLUDE_ALL_METADATA"
-    }
-  },
-  {
-    name                    = "allow-8080-ingress"
-    description             = null
-    direction               = "INGRESS"
-    priority                = null
-    destination_ranges      = ["10.0.0.0/8"]
-    source_ranges           = ["0.0.0.0/0"]
-    source_tags             = null
-    source_service_accounts = null
-    target_tags             = null
-    target_service_accounts = null
-    allow = [{
-      protocol = "tcp"
-      ports    = ["8080"]
-    }]
-    deny = []
-    log_config = {
-      metadata = "INCLUDE_ALL_METADATA"
-    }
-  },
+  rules = [
+    {
+      name                    = "allow-ssh-ingress"
+      direction               = "INGRESS"
+      source_ranges           = ["0.0.0.0/0"]
+      allow = [{
+        protocol = "tcp"
+        ports    = ["22"]
+      }]
+      log_config = {
+        metadata = "INCLUDE_ALL_METADATA"
+      }
+    },
+    {
+      name                    = "allow-8080-ingress"
+      direction               = "INGRESS"
+      source_ranges           = ["0.0.0.0/0"]
+      allow = [{
+        protocol = "tcp"
+        ports    = ["8080"]
+      }]
+      log_config = {
+        metadata = "INCLUDE_ALL_METADATA"
+      }
+    },
   ]
+  depends_on = [ module.vpc ]
 }
 
 module "instance_template" {
@@ -82,7 +68,8 @@ module "instance_template" {
   source_image = "mlflow-image-2"
   source_image_family = "mlflow"
   source_image_project = var.project_id
-  subnetwork = "subnet-1"
+  subnetwork = module.vpc.subnets["us-central1/subnet-1"].self_link
+  depends_on = [ module.vpc ]
 }
 
 module "compute_instance" {
