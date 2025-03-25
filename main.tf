@@ -79,5 +79,6 @@ module "instance_template" {
   region = var.default_region
   source_image = "mlflow-image-1"
   source_image_family = ""
+  source_image_project = var.project_id
   subnetwork = "subnet-1"
 }
