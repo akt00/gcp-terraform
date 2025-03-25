@@ -46,5 +46,37 @@ module "firewall_rules" {
     log_config = {
       metadata = "INCLUDE_ALL_METADATA"
     }
-  }]
+  },
+  {
+    name                    = "allow-8080-ingress"
+    description             = null
+    direction               = "INGRESS"
+    priority                = null
+    destination_ranges      = ["10.0.0.0/8"]
+    source_ranges           = ["0.0.0.0/0"]
+    source_tags             = null
+    source_service_accounts = null
+    target_tags             = null
+    target_service_accounts = null
+    allow = [{
+      protocol = "tcp"
+      ports    = ["8080"]
+    }]
+    deny = []
+    log_config = {
+      metadata = "INCLUDE_ALL_METADATA"
+    }
+  },
+  ]
+}
+
+module "instance_template" {
+  source  = "terraform-google-modules/vm/google//modules/instance_template"
+  automatic_restart = true
+  description = "mlflow server instance template"
+  network = module.vpc.network_name
+  project_id = var.project_id
+  region = var.default_region
+  source_image = "mlflow-image-1"
+  subnetwork = "subnet-1"
 }
