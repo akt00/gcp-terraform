@@ -93,5 +93,5 @@ module "compute_instance" {
   subnetwork = "subnet-1"
   subnetwork_project = var.project_id
   zone = "us-central1-c"
-  depends_on = [ module.vpc ]
+  depends_on = [ module.vpc, module.instance_template ]
 }
