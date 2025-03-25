@@ -89,9 +89,9 @@ module "compute_instance" {
   source  = "terraform-google-modules/vm/google//modules/compute_instance"
   hostname = "mlflow"
   instance_template = module.instance_template.self_link_unique
-  network = module.vpc.network_name
   region = var.default_region
-  subnetwork = "subnet-1"
+  network = module.vpc.network_name
+  subnetwork = module.vpc.subnets["us-central1/subnet-1"].self_link
   subnetwork_project = var.project_id
   zone = "us-central1-c"
   depends_on = [ module.vpc, module.instance_template ]
