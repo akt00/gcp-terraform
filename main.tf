@@ -74,11 +74,22 @@ module "instance_template" {
   source  = "terraform-google-modules/vm/google//modules/instance_template"
   automatic_restart = true
   description = "mlflow server instance template"
+  name_prefix = "mlflow-instance-template"
   network = module.vpc.network_name
   project_id = var.project_id
   region = var.default_region
-  source_image = "mlflow-image-1"
-  source_image_family = ""
-  source_image_project = var.project_id
   subnetwork = "subnet-1"
+  source_image = "mlflow-image-2"
+  source_image_family = "mlflow"
+  source_image_project = var.project_id
+}
+
+module "compute_instance" {
+  source  = "terraform-google-modules/vm/google//modules/compute_instance"
+  hostname = "mlflow"
+  instance_template = module.instance_template.name
+  network = module.vpc.network_name
+  region = var.default_region
+  subnetwork = "subnet-1"
+  subnetwork_project = var.project_id
 }
