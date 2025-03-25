@@ -78,16 +78,16 @@ module "instance_template" {
   network = module.vpc.network_name
   project_id = var.project_id
   region = var.default_region
-  subnetwork = "subnet-1"
   source_image = "mlflow-image-2"
   source_image_family = "mlflow"
   source_image_project = var.project_id
+  subnetwork = "subnet-1"
 }
 
 module "compute_instance" {
   source  = "terraform-google-modules/vm/google//modules/compute_instance"
   hostname = "mlflow"
-  instance_template = module.instance_template.name
+  instance_template = module.instance_template.self_link_unique
   network = module.vpc.network_name
   region = var.default_region
   subnetwork = "subnet-1"
