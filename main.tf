@@ -18,7 +18,7 @@ resource "google_compute_subnetwork" "subnetwork-1" {
 }
 
 resource "google_compute_firewall" "allow-health-check" {
-  name    = "allow-internal"
+  name    = "allow-health-check"
   network = google_compute_network.vpc_network.name
   priority = 1000
 
