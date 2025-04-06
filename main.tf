@@ -17,40 +17,54 @@ resource "google_compute_subnetwork" "subnetwork-1" {
   network       = google_compute_network.vpc_network.id
 }
 
-resource "google_compute_firewall" "allow-health-check" {
+resource "google_compute_firewall" "allow-health-check-v4" {
   name    = "allow-health-check"
   network = google_compute_network.vpc_network.name
   priority = 1000
-
   target_tags = ["lb-health-check"]
-
   allow {
     protocol = "tcp"
   }
-
   source_ranges = ["35.191.0.0/16", "130.211.0.0/22", "209.85.152.0/22", "209.85.204.0/22"]
+}
+
+resource "google_compute_firewall" "allow-health-check-v6" {
+  name  = "allow-health-check-ipv6"
+  network = google_compute_network.vpc_network.name
+  priority = 1000
+  target_tags = ["lb-health-check"]
+  allow {
+    protocol = "tcp"
+  }
+  source_ranges = ["2600:1901:8001::/48", "2600:2d00:1:b029::/64"]
 }
 
 resource "google_compute_firewall" "allow-internal" {
   name    = "allow-internal"
   network = google_compute_network.vpc_network.name
   priority = 65534
-
   allow {
     protocol = "icmp"
   }
-
   allow {
     protocol = "tcp"
     ports    = ["0-65535"]
   }
-
   allow {
     protocol = "udp"
     ports = ["0-65535"]
   }
-
   source_ranges = ["10.1.0.0/16"]
+}
+
+resource "google_compute_firewall" "allow-ssh" {
+  name = "allow-ssh"
+  network = google_compute_network.vpc_network.name
+  priority = 65534
+  allow {
+    protocol = "tcp"
+    ports = ["22"]
+  }
 }
 
 module "instance_template" {
