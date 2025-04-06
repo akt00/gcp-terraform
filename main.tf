@@ -52,6 +52,45 @@ module "firewall_rules" {
         metadata = "INCLUDE_ALL_METADATA"
       }
     },
+    {
+      name          = "default-allow-internal" # The name of the rule
+      description   = "Allow internal traffic on the default network" # Provided description
+      direction     = "INGRESS"     # Provided direction
+      priority      = 65534         # Provided priority
+
+      # --- IMPORTANT NOTE ON SOURCE RANGES ---
+      # The range "10.128.0.0/9" is the typical default for Google's *actual* 'default' network.
+      # If your VPC module creates a network with a *different* name (e.g., "my-vpc-network"),
+      # this rule should likely use the IP ranges of the subnets *within that specific VPC*.
+      # For your example subnet "10.1.0.0/20", you might want:
+      # source_ranges = ["10.1.0.0/20"] 
+      # Or if you have multiple internal subnets, list them all:
+      # source_ranges = ["10.1.0.0/20", "10.2.0.0/20"] 
+      # Using "10.128.0.0/9" here assumes your var.vpc_name is actually "default" or 
+      # you specifically want that wide range for some reason. Please VERIFY this range
+      # is appropriate for the network named module.vpc.network_name.
+      source_ranges = ["10.1.0.0/20"] # Provided source IP range - VERIFY IF CORRECT FOR YOUR NETWORK
+
+      # Target tags are not specified in the policy, so we omit target_tags
+
+      # Specify allowed protocols and ports
+      allow = [
+        {
+          protocol = "tcp"
+          ports    = ["0-65535"] # All TCP ports
+        },
+        {
+          protocol = "udp"
+          ports    = ["0-65535"] # All UDP ports
+        },
+        {
+          protocol = "icmp" # ICMP protocol (no ports needed)
+        }
+      ]
+
+      # Logs are Off, so we omit the log_config block
+      # disabled = false # Rule is enabled by default, omit 'disabled' or set to false
+    },
   ]
   depends_on = [ module.vpc ]
 }
