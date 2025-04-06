@@ -17,9 +17,24 @@ resource "google_compute_subnetwork" "subnetwork-1" {
   network       = google_compute_network.vpc_network.id
 }
 
-resource "google_compute_firewall" "default" {
+resource "google_compute_firewall" "allow-health-check" {
   name    = "allow-internal"
   network = google_compute_network.vpc_network.name
+  priority = 1000
+
+  target_tags = [lb-health-check]
+
+  allow {
+    protocol = "tcp"
+  }
+
+  source_ranges = ["35.191.0.0/16", "130.211.0.0/22", "209.85.152.0/22", "209.85.204.0/22"]
+}
+
+resource "google_compute_firewall" "allow-internal" {
+  name    = "allow-internal"
+  network = google_compute_network.vpc_network.name
+  priority = 65534
 
   allow {
     protocol = "icmp"
