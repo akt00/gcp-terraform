@@ -22,7 +22,7 @@ resource "google_compute_firewall" "allow-health-check" {
   network = google_compute_network.vpc_network.name
   priority = 1000
 
-  target_tags = [lb-health-check]
+  target_tags = ["lb-health-check"]
 
   allow {
     protocol = "tcp"
