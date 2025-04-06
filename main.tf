@@ -10,7 +10,7 @@ resource "google_compute_network" "vpc_network" {
   mtu                     = 1460
 }
 
-resource "google_compute_subnetwork" "network-with-private-secondary-ip-ranges" {
+resource "google_compute_subnetwork" "subnetwork-1" {
   name          = "subnet-1"
   ip_cidr_range = "10.1.0.0/16"
   region        = var.default_region
@@ -44,13 +44,13 @@ module "instance_template" {
   machine_type = "e2-small"
   description = "mlflow server instance template"
   name_prefix = "mlflow-instance-template"
-  network = module.vpc.network_name
+  network = google_compute_network.vpc_network.name
   project_id = var.project_id
   region = var.default_region
   source_image = "mlflow-image-2"
   source_image_family = "mlflow"
   source_image_project = var.project_id
-  subnetwork = module.vpc.subnets["us-central1/subnet-1"].self_link
+  subnetwork = google_compute_subnetwork.subnetwork-1.self_link
   depends_on = [ google_compute_network.vpc_network ]
 }
 
@@ -59,8 +59,8 @@ module "compute_instance" {
   hostname = "mlflow"
   instance_template = module.instance_template.self_link_unique
   region = var.default_region
-  network = module.vpc.network_name
-  subnetwork = module.vpc.subnets["us-central1/subnet-1"].self_link
+  network = google_compute_network.vpc_network.name
+  subnetwork = google_compute_subnetwork.subnetwork-1.self_link
   subnetwork_project = var.project_id
   zone = "us-central1-c"
   depends_on = [ module.instance_template ]
