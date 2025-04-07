@@ -6,9 +6,9 @@ terraform {
     }
   }
 
-  backend "gcs" {
-    bucket = "cis-dev-bronze"
+  backend "state_backend" {
+    bucket = var.backend
   }
-
+  
   required_version = ">=1.1.0"
 }

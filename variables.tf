@@ -1,9 +1,14 @@
+variable "backend" {
+  type = string
+  default = "ml-dev-terraform"
+}
+
 variable "project_id" {
   type = string
   default = "ml-dev-1"
 }
 
-variable "default_region" {
+variable "region" {
   type = string
   default = "us-central1"
 }
