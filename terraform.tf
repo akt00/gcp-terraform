@@ -6,7 +6,7 @@ terraform {
     }
   }
 
-  backend "state_backend" {
+  backend "gcs" {
     bucket = var.backend
   }
   
