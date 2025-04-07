@@ -1,8 +1,3 @@
-variable "backend" {
-  type = string
-  default = "ml-dev-terraform"
-}
-
 variable "project_id" {
   type = string
   default = "ml-dev-1"
