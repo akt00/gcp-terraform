@@ -7,7 +7,7 @@ terraform {
   }
 
   backend "gcs" {
-    bucket = "ml-dev-terraform"
+    bucket = "cis-dev-terraform"
   }
   
   required_version = ">=1.1.0"
